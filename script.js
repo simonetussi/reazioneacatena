@@ -5,7 +5,6 @@ const bestScoreDisplay = document.getElementById('bestScore');
 const nicknameInput = document.getElementById('nickname');
 let isGameActive = false;
 
-// Inizializzazione pulsanti
 document.querySelectorAll('.color').forEach(btn => {
     btn.style.opacity = '0.3';
     btn.addEventListener('click', handleColorClick);
@@ -14,7 +13,6 @@ document.querySelectorAll('.color').forEach(btn => {
     btn.addEventListener('mouseleave', () => btn.style.opacity = '0.3');
 });
 
-// Funzioni del gioco
 function playSequence(sequence) {
     disableButtons();
     
@@ -87,12 +85,10 @@ function gameOver(score) {
     startButton.disabled = false;
     enableButtons();
     
-    // Aggiorna punteggi
     lastScoreDisplay.textContent = score;
     const currentBest = parseInt(bestScoreDisplay.textContent) || 0;
     bestScoreDisplay.textContent = Math.max(score, currentBest);
     
-    // Animazioni
     document.querySelector('.game-container').classList.add('error');
     setTimeout(() => {
         document.querySelector('.game-container').classList.remove('error');
@@ -103,7 +99,6 @@ function gameOver(score) {
     }, 500);
 }
 
-// Avvio gioco
 startButton.addEventListener('click', async () => {
     if (isGameActive) return;
     

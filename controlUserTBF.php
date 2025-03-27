@@ -4,7 +4,6 @@ $ROOT = "root";
 $PASSWORD = "";
 $DATABASE = "reazioneacatena";
 
-// Verifica se i dati sono stati inviati tramite POST
 if ($_POST["nickname"] != "" && $_POST["password"] != "") {
     $nick = $_POST["nickname"];
     $pass = $_POST["password"];
@@ -20,7 +19,6 @@ if (mysqli_connect_errno()) {
 
 mysqli_select_db($con, $DATABASE);
 
-// Modifica la query per un controllo più sicuro dei dati
 $sql = "SELECT * FROM `users` WHERE `nickname` = ? AND `password` = ?";
 $stmt = mysqli_prepare($con, $sql);
 mysqli_stmt_bind_param($stmt, "ss", $nick, $pass);

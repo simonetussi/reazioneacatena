@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Connessione al database
 $SERVER = "localhost";
 $ROOT = "root";
 $PASSWORD = "";
@@ -15,11 +14,9 @@ if (!$con) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Raccogli i dati dal form
     $nickname = mysqli_real_escape_string($con, $_POST['nickname']);
     $password = mysqli_real_escape_string($con, $_POST['password']);
     
-    // Controlla se il nickname esiste già nel database
     $sql_check = "SELECT * FROM `users` WHERE `nickname` = ?";
     $stmt_check = mysqli_prepare($con, $sql_check);
     mysqli_stmt_bind_param($stmt_check, "s", $nickname);
@@ -27,12 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result_check = mysqli_stmt_get_result($stmt_check);
 
     if (mysqli_num_rows($result_check) > 0) {
-        // Il nickname è già presente nel database
         echo '<script language="javascript">';
         echo 'alert("Nickname già utilizzato!");';  
         echo '</script>';
     } else {
-        // Il nickname non esiste, inserisci i dati nel database
         $sql_insert = "INSERT INTO `users` (`nickname`, `password`) VALUES (?, ?)";
         $stmt_insert = mysqli_prepare($con, $sql_insert);
         mysqli_stmt_bind_param($stmt_insert, "ss", $nickname, $password);
@@ -40,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (mysqli_stmt_execute($stmt_insert)) {
             echo '<script language="javascript">';
             echo 'alert("Registrazione avvenuta con successo!");';
-            echo 'window.location.href="progettoTBF.php";';  // Redirect alla pagina di login
+            echo 'window.location.href="login.php";';
             echo '</script>';
         } else {
             echo '<script language="javascript">';
