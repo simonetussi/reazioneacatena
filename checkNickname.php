@@ -1,45 +1,57 @@
 <?php
-header('Content-Type: application/json');
-include 'configDatabase.php';
+require 'configDatabase.php';
 
-// Controlla errori di connessione
-if ($conn->connect_error) {
-    die(json_encode(['error' => 'Connessione al database fallita']));
-}
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
-$data = json_decode(file_get_contents('php://input'), true);
-if (json_last_error() !== JSON_ERROR_NONE) {
-    die(json_encode(['error' => 'Dati JSON non validi']));
-}
+try {
+    $input = file_get_contents('php://input');
+    if (empty($input)) {
+        throw new Exception("Richiesta vuota");
+    }
+    
+    $data = json_decode($input, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("JSON malformato");
+    }
+    
+    $nickname = trim($data['nickname'] ?? '');
+    if (empty($nickname)) {
+        throw new Exception("Nickname obbligatorio");
+    }
 
-$nickname = $data['nickname'] ?? '';
+    // Query migliorata con controllo errori
+    if (!$stmt = $conn->prepare("SELECT score FROM users WHERE nickname = ?")) {
+        throw new Exception("Preparazione query fallita: " . $conn->error);
+    }
+    
+    $stmt->bind_param("s", $nickname);
+    if (!$stmt->execute()) {
+        throw new Exception("Esecuzione query fallita: " . $stmt->error);
+    }
+    
+    $result = $stmt->get_result();
+    $response = ['exists' => false];
 
-// Verifica nickname non vuoto
-if (empty($nickname)) {
-    die(json_encode(['error' => 'Nickname mancante']));
-}
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $response = [
+            'exists' => true,
+            'bestScore' => (int)$row['score']
+        ];
+    }
+    
+    echo json_encode($response);
 
-$stmt = $conn->prepare("SELECT score FROM users WHERE nickname = ?");
-if (!$stmt) {
-    die(json_encode(['error' => 'Preparazione query fallita: ' . $conn->error]));
-}
-
-$stmt->bind_param("s", $nickname);
-if (!$stmt->execute()) {
-    die(json_encode(['error' => 'Esecuzione query fallita: ' . $stmt->error]));
-}
-
-$result = $stmt->get_result();
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
+} catch (Exception $e) {
+    error_log("Errore checkNickname: " . $e->getMessage());
+    http_response_code(500);
     echo json_encode([
-        'exists' => true,
-        'bestScore' => $row['score']
+        'success' => false,
+        'error' => $e->getMessage()
     ]);
-} else {
-    echo json_encode(['exists' => false]);
+} finally {
+    if (isset($stmt)) $stmt->close();
+    $conn->close();
 }
-
-$stmt->close();
-$conn->close();
 ?>

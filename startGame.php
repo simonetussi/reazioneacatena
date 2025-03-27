@@ -1,10 +1,19 @@
 <?php
-require_once 'config.php';
+require 'configDatabase.php';
+session_start();
+
+$input = json_decode(file_get_contents('php://input'), true);
 
 if (empty($input['nickname'])) {
-    jsonResponse(['Errore' => 'Il nickname è necessario'], 400);
+    http_response_code(400);
+    echo json_encode(['error' => 'Nickname required']);
+    exit;
 }
 
+// Aggiungi la definizione dei colori
+define('COLORS', ['red', 'green', 'blue', 'yellow']);
+
+// Inizializza la sessione di gioco
 $_SESSION['game'] = [
     'nickname' => trim($input['nickname']),
     'sequence' => [COLORS[array_rand(COLORS)]],
@@ -13,7 +22,7 @@ $_SESSION['game'] = [
     'bestScore' => $_SESSION['game']['bestScore'] ?? 0
 ];
 
-jsonResponse([
+echo json_encode([
     'sequence' => $_SESSION['game']['sequence'],
     'score' => 0
 ]);
