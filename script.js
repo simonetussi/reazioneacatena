@@ -108,22 +108,41 @@ startButton.addEventListener('click', async () => {
         return;
     }
     
-    isGameActive = true;
-    startButton.disabled = true;
-    scoreDisplay.textContent = '0';
-    
+    // Verifica l'esistenza del nickname nel database
     try {
-        const response = await fetch('/reazioneacatena/startGame.php', {
+        const checkResponse = await fetch('/reazioneacatena/checkNickname.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nickname })
         });
         
-        const data = await response.json();
-        playSequence(data.sequence);
+        const checkData = await checkResponse.json();
+        
+        if (!checkData.exists) {
+            if (confirm('Nickname non registrato. Vuoi creare un account?')) {
+                window.location.href = 'playerRegister.php';
+            }
+            return;
+        }
+        
+        // Se il nickname esiste, procedi con il gioco
+        isGameActive = true;
+        startButton.disabled = true;
+        scoreDisplay.textContent = '0';
+        
+        const gameResponse = await fetch('/reazioneacatena/startGame.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname })
+        });
+        
+        const gameData = await gameResponse.json();
+        playSequence(gameData.sequence);
+        
     } catch (error) {
         console.error('Errore:', error);
         isGameActive = false;
         startButton.disabled = false;
+        alert('Si è verificato un errore durante la verifica del nickname');
     }
 });
