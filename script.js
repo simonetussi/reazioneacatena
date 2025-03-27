@@ -108,7 +108,6 @@ startButton.addEventListener('click', async () => {
         return;
     }
     
-    // Verifica l'esistenza del nickname nel database
     try {
         const checkResponse = await fetch('/reazioneacatena/checkNickname.php', {
             method: 'POST',
@@ -125,7 +124,9 @@ startButton.addEventListener('click', async () => {
             return;
         }
         
-        // Se il nickname esiste, procedi con il gioco
+        // Aggiorna il bestScore con il valore dal database
+        bestScoreDisplay.textContent = checkData.bestScore;
+        
         isGameActive = true;
         startButton.disabled = true;
         scoreDisplay.textContent = '0';
@@ -143,6 +144,6 @@ startButton.addEventListener('click', async () => {
         console.error('Errore:', error);
         isGameActive = false;
         startButton.disabled = false;
-        alert('Si è verificato un errore durante la verifica del nickname');
+        alert('Errore durante l\'avvio del gioco');
     }
 });

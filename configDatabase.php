@@ -7,8 +7,6 @@ $dbname = 'reazioneacatena';
 $conn = new mysqli($host, $user, $pass, $dbname);
 
 if ($conn->connect_error) {
-    die("Connessione fallita: " . $conn->connect_error);
-} else {
-    echo "Connesso a DB con successo!";
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
 ?>

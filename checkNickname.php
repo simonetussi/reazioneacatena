@@ -1,32 +1,44 @@
 <?php
 header('Content-Type: application/json');
+include 'configDatabase.php';
 
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'reazioneacatena';
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
+// Controlla errori di connessione
 if ($conn->connect_error) {
     die(json_encode(['error' => 'Connessione al database fallita']));
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-$nickname = $conn->real_escape_string($data['nickname'] ?? '');
-
-if (empty($nickname)) {
-    echo json_encode(['exists' => false]);
-    exit;
+if (json_last_error() !== JSON_ERROR_NONE) {
+    die(json_encode(['error' => 'Dati JSON non validi']));
 }
 
-$stmt = $conn->prepare("SELECT COUNT(*) as count FROM users WHERE nickname = ?");
-$stmt->bind_param("s", $nickname);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
+$nickname = $data['nickname'] ?? '';
 
-echo json_encode(['exists' => $row['count'] > 0]);
+// Verifica nickname non vuoto
+if (empty($nickname)) {
+    die(json_encode(['error' => 'Nickname mancante']));
+}
+
+$stmt = $conn->prepare("SELECT score FROM users WHERE nickname = ?");
+if (!$stmt) {
+    die(json_encode(['error' => 'Preparazione query fallita: ' . $conn->error]));
+}
+
+$stmt->bind_param("s", $nickname);
+if (!$stmt->execute()) {
+    die(json_encode(['error' => 'Esecuzione query fallita: ' . $stmt->error]));
+}
+
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    echo json_encode([
+        'exists' => true,
+        'bestScore' => $row['score']
+    ]);
+} else {
+    echo json_encode(['exists' => false]);
+}
 
 $stmt->close();
 $conn->close();
