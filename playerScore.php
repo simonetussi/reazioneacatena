@@ -10,7 +10,6 @@
     <h1>Classifica Punteggi</h1>
     <table>
         <tr>
-            <th>ID</th>
             <th>Nickname</th>
             <th>Punteggio</th>
             <th>Data</th>
@@ -23,19 +22,19 @@
 
         $con = mysqli_connect($SERVER, $ROOT, $PASSWORD, $DATABASE);
         if (!$con) {
-            echo "<tr><td colspan='4'>Errore di connessione al database</td></tr>";
+            echo "<tr><td colspan='3'>Errore di connessione al database</td></tr>";
             exit();
         }
 
-        $sql = "SELECT * FROM `scores`";
+        $sql = "SELECT * FROM `users`";
         $result = mysqli_query($con, $sql);
 
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr><td>" . $row["id"] . "</td><td>" . $row["fk_nickname"] . "</td><td>" . $row["punteggio"] . "</td><td>" . $row["data"] . "</td></tr>";
+                echo "<tr><td>" . $row["nickname"] . "</td><td>" . $row["score"] . "</td><td>" . $row["date"] . "</td></tr>";
             }
         } else {
-            echo "<tr><td colspan='4'>Nessun risultato trovato</td></tr>";
+            echo "<tr><td colspan='3'>Nessun risultato trovato</td></tr>";
         }
 
         mysqli_close($con);
