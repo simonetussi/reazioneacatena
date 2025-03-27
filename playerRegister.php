@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = mysqli_real_escape_string($con, $_POST['password']);
     
     // Controlla se il nickname esiste già nel database
-    $sql_check = "SELECT * FROM `user` WHERE `nickname` = ?";
+    $sql_check = "SELECT * FROM `users` WHERE `nickname` = ?";
     $stmt_check = mysqli_prepare($con, $sql_check);
     mysqli_stmt_bind_param($stmt_check, "s", $nickname);
     mysqli_stmt_execute($stmt_check);
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo '</script>';
     } else {
         // Il nickname non esiste, inserisci i dati nel database
-        $sql_insert = "INSERT INTO `user` (`nickname`, `password`) VALUES (?, ?)";
+        $sql_insert = "INSERT INTO `users` (`nickname`, `password`) VALUES (?, ?)";
         $stmt_insert = mysqli_prepare($con, $sql_insert);
         mysqli_stmt_bind_param($stmt_insert, "ss", $nickname, $password);
         
@@ -73,8 +73,8 @@ mysqli_close($con);
         <input type="password" id="password" name="password" placeholder="Password" required><br>
         <input type="submit" value="Registrati">    
     </form>
-    <a href="progettoTBF.php">Accedi</a>
-    <a href="../index.html">Torna al gioco</a>
+    <a href="login.php">Accedi</a>
+    <a href="http://localhost/reazioneacatena/">Torna al gioco</a>
 </body>
 <footer>
 </footer>

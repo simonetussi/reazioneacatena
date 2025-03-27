@@ -41,6 +41,6 @@
         mysqli_close($con);
         ?>
     </table>
-    <a href="../index.html">Torna al gioco</a>
+    <a href="http://localhost/reazioneacatena/">Torna al gioco</a>
 </body>
 </html>
