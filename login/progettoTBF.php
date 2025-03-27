@@ -25,6 +25,7 @@ error_reporting(E_ALL);
         <input type="submit" value="Accedi">
     </form>
     <a href="playerRegister.php">Registrati</a>
+    <a href="../index.html">Torna al gioco</a>
 </body>
 <footer>
 

@@ -74,6 +74,7 @@ mysqli_close($con);
         <input type="submit" value="Registrati">    
     </form>
     <a href="progettoTBF.php">Accedi</a>
+    <a href="../index.html">Torna al gioco</a>
 </body>
 <footer>
 </footer>

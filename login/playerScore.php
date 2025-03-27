@@ -41,6 +41,6 @@
         mysqli_close($con);
         ?>
     </table>
-    <a href="progettoTBF.php">Accedi di nuovo</a>
+    <a href="../index.html">Torna al gioco</a>
 </body>
 </html>
