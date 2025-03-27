@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (mysqli_num_rows($result_check) > 0) {
         // Il nickname è già presente nel database
         echo '<script language="javascript">';
-        echo 'alert("Nickname già utilizzato!");';
+        echo 'alert("Nickname già utilizzato!");';  
         echo '</script>';
     } else {
         // Il nickname non esiste, inserisci i dati nel database
@@ -73,6 +73,7 @@ mysqli_close($con);
         <input type="password" id="password" name="password" placeholder="Password" required><br>
         <input type="submit" value="Registrati">    
     </form>
+    <br />
     <a href="login.php">Accedi</a>
     <a href="http://localhost/reazioneacatena/">Torna al gioco</a>
 </body>

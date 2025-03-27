@@ -23,6 +23,7 @@ error_reporting(E_ALL);
         <input type="password" id="password" name="password" placeholder="Password" required><br>
         <input type="submit" value="Accedi">
     </form>
+    <br />
     <a href="playerRegister.php">Registrati</a>
     <a href="http://localhost/reazioneacatena/">Torna al gioco</a>
 </body>
